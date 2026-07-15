@@ -1,0 +1,38 @@
+"""
+Synxi Omni Sentinel - نظام كشف التسلل الذاتي
+إخلاء مسؤولية: هذا الكود لأغراض تعليمية لتطوير مهارات الدفاع السيبراني.
+المؤلف: Boss Synxi
+"""
+
+import os
+import time
+
+# قائمة بالعمليات أو الملفات الموثوقة (يمكنك إضافة مساراتك الخاصة)
+TRUSTED_FILES = ["/system/bin/sh", "/system/bin/toolbox"]
+
+def check_security():
+    print("[*] Synxi Omni Sentinel: جاري مسح النظام...")
+    
+    # 1. فحص الملفات المشبوهة
+    for f in TRUSTED_FILES:
+        if not os.path.exists(f):
+            return f"[ALERT] خطر! تم العثور على تغيير في ملفات النظام: {f}"
+            
+    # 2. فحص العمليات النشطة (بسيط)
+    # ملاحظة: في أندرويد الصلاحيات مقيدة، لذا هذا الجزء يراقب ما هو متاح
+    # يمكننا إضافة كود لقراءة مخرجات 'ps' (Process Status)
+    process_status = os.popen("ps").read()
+    if "malicious_pattern" in process_status:
+        return "[ALERT] تم اكتشاف نشاط مشبوه في العمليات!"
+
+    return "[INFO] النظام آمن ولا توجد تهديدات."
+
+def send_alert(message):
+    # بدلاً من الإرسال الخارجي، نكتب التقرير في ملف "تقرير الأمان"
+    with open("security_report.txt", "a") as f:
+        f.write(f"{time.ctime()} : {message}\n")
+    print(f"[*] تم تسجيل التقرير: {message}")
+
+if __name__ == "__main__":
+    status = check_security()
+    send_alert(status)
